@@ -1,0 +1,42 @@
+dist: xenial
+
+language: go
+
+env:
+  - GO111MODULE=on
+
+go:
+  - 1.12.x
+
+git:
+  depth: 1
+
+install: true
+
+before_script:
+  - git config --local user.name "bialas1993"
+  - git config --local user.email "bialydawid93@wp.pl"
+  - export TAG_NAME=$(git describe)
+
+script:
+  - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags '-X "main.version=${TAG_NAME}" -X "main.date=${date}" -s -w' -o etherload-linux ./cmd/etherload/main.go
+  - GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags '-X "main.version=${TAG_NAME}" -X "main.date=${date}" -s -w' -o etherload-macos ./cmd/etherload/main.go
+  - GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags '-X "main.version=${TAG_NAME}" -X "main.date=${date}" -s -w' -o etherload-windows.exe ./cmd/etherload/main.go
+
+deploy:
+  - provider: releases
+    api_key: "$GITHUB_TOKEN"
+    file: 
+      - "etherload-linux"
+      - "etherload-macos"
+      - "etherload-windows.exe"
+    skip_cleanup: true
+    overwrite: true
+    tag_name: "$TAG_NAME"
+    target_commitish: "$TRAVIS_COMMIT"
+    on:
+        tags: true
+        repo: "$TRAVIS_REPO_SLUG"
+
+notifications:
+  email: false

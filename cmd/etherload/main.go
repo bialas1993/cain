@@ -23,17 +23,22 @@ var rootCmd = &cobra.Command{
 	Short: "Load generator",
 	Long:  `Load generator for SSE service`,
 	Run: func(cmd *cobra.Command, args []string) {
+		uri, err := cmd.Flags().GetString("uri")
+		delay, _ := cmd.Flags().GetInt("delay")
+
+		if err != nil || len(uri) == 0 {
+			panic("Uri is not")
+		}
+
 		openedConnections := 0
 		clients := make(chan int, 1)
-		ticker := time.NewTicker(150 * time.Millisecond)
+		ticker := time.NewTicker(time.Duration(delay) * time.Millisecond)
 		events := make(chan *sse.Event)
 		connectFail := false
 
-		uri, _ := cmd.Flags().GetString("uri")
-
 		f, err := os.Create("log.csv")
 		if err != nil {
-			panic("Can not create file")
+			panic("Can not create log file.")
 		}
 
 		f.WriteString("id,publish,receive,connections\n")
@@ -118,7 +123,8 @@ func init() {
 	}
 
 	godotenv.Load()
-	rootCmd.Flags().StringP("uri", "u", "", "Address to testing.")
+	rootCmd.Flags().StringP("uri", "u", "", "address to test")
+	rootCmd.Flags().IntP("delay", "d", 150, "delay for add new connection [miliseconds]")
 }
 
 var mu sync.Mutex
