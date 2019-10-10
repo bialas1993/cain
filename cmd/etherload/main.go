@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"os/signal"
@@ -18,6 +19,8 @@ import (
 	"github.com/bialas1993/etherload/pkg/cue"
 )
 
+var buffer bytes.Buffer
+
 var rootCmd = &cobra.Command{
 	Use:   "etherload",
 	Short: "Load generator",
@@ -25,10 +28,13 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		uri, err := cmd.Flags().GetString("uri")
 		delay, _ := cmd.Flags().GetInt("delay")
+		limit, _ := cmd.Flags().GetInt("limit")
 
 		if err != nil || len(uri) == 0 {
 			panic("Uri is not")
 		}
+
+		log.Printf("Address: %s, connections limit: %d, delay new connection: %d", uri, limit, delay)
 
 		openedConnections := 0
 		clients := make(chan int, 1)
@@ -69,7 +75,7 @@ var rootCmd = &cobra.Command{
 				}
 				break
 			case <-ticker.C:
-				if !connectFail {
+				if !connectFail && (openedConnections < limit || limit == 0) {
 					openedConnections++
 
 					go func(c int) {
@@ -92,19 +98,22 @@ var rootCmd = &cobra.Command{
 						mu.Lock()
 						defer mu.Unlock()
 
-						f.Write(e.ID)
-						f.Write([]byte(","))
+						buffer.Write(e.ID)
+						buffer.WriteString(",")
+
 						if len(d.Entries) > 0 {
-							f.Write([]byte(d.Entries[0].PublishDate))
+							buffer.WriteString(d.Entries[0].PublishDate)
 						} else {
-							f.Write([]byte("-"))
+							buffer.WriteString("-")
 						}
 
-						f.Write([]byte(","))
-						f.Write([]byte(time.Now().Format("2006-01-02T15:04:05.000Z0700")))
-						f.Write([]byte(","))
-						f.Write([]byte(strconv.Itoa(openedConnections)))
-						f.Write([]byte("\n"))
+						buffer.WriteString(",")
+						buffer.WriteString(time.Now().Format("2006-01-02T15:04:05.000Z0700"))
+						buffer.WriteString(",")
+						buffer.WriteString(strconv.Itoa(openedConnections))
+						buffer.WriteString("\n")
+
+						f.Write(buffer.Bytes())
 					}(event)
 				}
 				break
@@ -125,6 +134,7 @@ func init() {
 	godotenv.Load()
 	rootCmd.Flags().StringP("uri", "u", "", "address to test")
 	rootCmd.Flags().IntP("delay", "d", 150, "delay for add new connection [miliseconds]")
+	rootCmd.Flags().IntP("limit", "l", 0, "connections limit (default 0)")
 }
 
 var mu sync.Mutex
