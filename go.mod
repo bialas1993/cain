@@ -4,6 +4,8 @@ go 1.12
 
 require (
 	github.com/cenkalti/backoff v2.2.1+incompatible
+	github.com/cloudflare/cfssl v0.0.0-20190911221928-1a911ca1b1d6
+	github.com/gorilla/websocket v1.4.1
 	github.com/joho/godotenv v1.3.0
 	github.com/r3labs/sse v0.0.0-20190718103820-313b1ddc8a20
 	github.com/sirupsen/logrus v1.4.2

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Etherload</title>
+    <link href="style.css"/>
+  </head>
+  <body>
+    <h2>Scale connections</h2>
+    <div class="slidecontainer">
+        <input type="range" min="1" max="1500" value="50" class="slider" id="myRange">
+
+        <button onclick="scale()">Scale</button>
+        <p>Value: <span id="value"></span></p>
+        <pre>
+          <p id=log></p>
+        </pre>
+    </div>
+
+    <script>
+        const slider = document.getElementById("myRange");
+        const output = document.getElementById("value");
+        const log = document.getElementById("log");
+        let socket = new WebSocket("ws://localhost:8080/echo");
+
+        output.innerHTML = slider.value;
+        
+        const logger = (text) => log.innerText += text + "\n";
+        const scale = () => {
+          logger(`Scaling to: ${slider.value}`);
+          socket.send(slider.value)
+        };
+
+        slider.oninput = () => output.innerHTML = slider.value;
+        
+        logger("Attempting Connection...");
+
+        socket.onopen = () => {
+            logger("Successfully Connected");
+        };
+        
+        socket.onclose = event => {
+            logger("Socket Closed Connection: ", event);
+        };
+
+        socket.onerror = error => {
+            logger("Socket Error: ", error);
+        };
+    </script>
+  </body>
+</html>
