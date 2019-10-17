@@ -1,5 +1,5 @@
-# etherload
-Load tool for SSE service
+# cain
+Load tool for kill SSE service
 
 ## Enviroment
 
@@ -11,5 +11,5 @@ ulimit -a
 ## Usage
 
 ```
-bin/etherload -u "https://cue.prev-6.dev.nvtvt.com/sseproxy?filter=NQ==" -d 100
+bin/cain -u "https://cue.prev-6.dev.nvtvt.com/sseproxy?filter=NQ==" -d 100
 ```

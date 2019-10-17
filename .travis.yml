@@ -19,17 +19,17 @@ before_script:
   - export TAG_NAME=$(git describe)
 
 script:
-  - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags '-X "main.version=${TAG_NAME}" -X "main.date=${date}" -s -w' -o etherload-linux ./cmd/etherload/main.go
-  - GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags '-X "main.version=${TAG_NAME}" -X "main.date=${date}" -s -w' -o etherload-macos ./cmd/etherload/main.go
-  - GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags '-X "main.version=${TAG_NAME}" -X "main.date=${date}" -s -w' -o etherload-windows.exe ./cmd/etherload/main.go
+  - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags '-X "main.version=${TAG_NAME}" -X "main.date=${date}" -s -w' -o cain-linux ./cmd/cain/main.go
+  - GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags '-X "main.version=${TAG_NAME}" -X "main.date=${date}" -s -w' -o cain-macos ./cmd/cain/main.go
+  - GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags '-X "main.version=${TAG_NAME}" -X "main.date=${date}" -s -w' -o cain-windows.exe ./cmd/cain/main.go
 
 deploy:
   - provider: releases
     api_key: "$GITHUB_TOKEN"
     file: 
-      - "etherload-linux"
-      - "etherload-macos"
-      - "etherload-windows.exe"
+      - "cain-linux"
+      - "cain-macos"
+      - "cain-windows.exe"
     skip_cleanup: true
     overwrite: true
     tag_name: "$TAG_NAME"
