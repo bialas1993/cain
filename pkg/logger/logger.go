@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/bialas1993/etherload/pkg/cue"
+	"github.com/bialas1993/cain/pkg/cue"
 	"github.com/r3labs/sse"
 )
 
@@ -16,7 +16,6 @@ const LogFileName = "log.csv"
 
 var (
 	buffer bytes.Buffer
-	f      *os.File
 	mu     sync.Mutex
 )
 
@@ -42,7 +41,7 @@ func New() *logger {
 	}
 }
 
-func Write(l *Log) {
+func (lg *logger) Write(l *Log) {
 	var d cue.Event
 	json.Unmarshal(l.Event.Data, &d)
 
@@ -64,7 +63,7 @@ func Write(l *Log) {
 	buffer.WriteString(strconv.Itoa(l.Connections))
 	buffer.WriteString("\n")
 
-	f.Write(buffer.Bytes())
+	lg.file.Write(buffer.Bytes())
 }
 
 func (l *logger) Close() {

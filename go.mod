@@ -1,4 +1,4 @@
-module github.com/bialas1993/etherload
+module github.com/bialas1993/cain
 
 go 1.12
 
