@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"sync"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
+	// "github.com/bialas1993/etherload/pkg/logger"
 )
 
 var rootCmd = &cobra.Command{
@@ -21,8 +21,6 @@ func init() {
 	rootCmd.Flags().IntP("delay", "d", 150, "delay for add new connection [miliseconds]")
 	rootCmd.Flags().IntP("limit", "l", 0, "connections limit (default 0)")
 }
-
-var mu sync.Mutex
 
 func main() {
 	rootCmd.Execute()
