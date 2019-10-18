@@ -9,6 +9,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/r3labs/sse"
+	"github.com/sirupsen/logrus"
 
 	"github.com/spf13/cobra"
 
@@ -69,7 +70,7 @@ func Load(cmd *cobra.Command, args []string) {
 			fmt.Printf("clients: %+v\n", c)
 
 			if err := sseclient.NewClient(uri, events); err != nil {
-				fmt.Errorf("Can not create connection, opened: %d", openedConnections)
+				logrus.Errorf("Can not create connection, opened: %d", openedConnections)
 				connectFail = true
 			}
 			break
