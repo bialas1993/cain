@@ -92,7 +92,7 @@ func Load(cmd *cobra.Command, args []string) {
 			}
 			break
 		case <-c:
-			fmt.Println("\nClosing..\n")
+			fmt.Printf("\nClosing..\n")
 			os.Exit(0)
 		}
 	}
