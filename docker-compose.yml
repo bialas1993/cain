@@ -1,0 +1,12 @@
+version: '3'
+services:
+  elastic:
+    container_name: "elk"
+    image: sebp/elk
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5044:5044"
+    volumes: 
+      - "./log.config:/etc/logstash/conf.d/12-connections.conf:ro"
+      - "./log.csv:/tmp/log.csv:ro"
