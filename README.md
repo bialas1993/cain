@@ -1,5 +1,5 @@
 # cain
-Load tool for kill SSE service
+Load tool to kill SSE service
 
 ## Enviroment
 
