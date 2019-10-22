@@ -18,7 +18,6 @@ import (
 )
 
 var buffer bytes.Buffer
-var log = logger.New()
 
 var rootCmd = &cobra.Command{
 	Use:   "cain",
@@ -28,6 +27,8 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
+	logrus.SetLevel(logrus.InfoLevel)
+
 	godotenv.Load()
 	rootCmd.Flags().StringP("uri", "u", "", "address to test")
 	rootCmd.Flags().IntP("delay", "d", 150, "delay for add new connection [miliseconds]")
@@ -50,6 +51,8 @@ func Load(cmd *cobra.Command, args []string) {
 
 	fmt.Printf("Address: %s, connections limit: %d, delay new connection: %d\n", uri, limit, delay)
 
+	log := logger.New()
+
 	openedConnections := 0
 	clients := make(chan int, 1)
 	ticker := time.NewTicker(time.Duration(delay) * time.Millisecond)
@@ -59,6 +62,7 @@ func Load(cmd *cobra.Command, args []string) {
 	defer func() {
 		close(clients)
 		close(events)
+		log.Close()
 	}()
 
 	c := make(chan os.Signal, 1)
@@ -86,9 +90,12 @@ func Load(cmd *cobra.Command, args []string) {
 			break
 
 		case event := <-events:
-			fmt.Printf("|")
 			if len(event.ID) > 0 {
-				go log.Write(&logger.Log{event, openedConnections})
+				fmt.Printf("|")
+
+				go func(event *sse.Event, openedConnections int) {
+					log.Write(&logger.Log{event, openedConnections})
+				}(event, openedConnections)
 			}
 			break
 		case <-c:

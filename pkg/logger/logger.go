@@ -14,10 +14,7 @@ import (
 
 const LogFileName = "log.csv"
 
-var (
-	buffer bytes.Buffer
-	mu     sync.Mutex
-)
+var mu sync.Mutex
 
 type Log struct {
 	Event       *sse.Event
@@ -42,11 +39,11 @@ func New() *logger {
 }
 
 func (lg *logger) Write(l *Log) {
-	var d cue.Event
-	json.Unmarshal(l.Event.Data, &d)
 
-	mu.Lock()
-	defer mu.Unlock()
+	var d cue.Event
+	var buffer bytes.Buffer
+
+	json.Unmarshal(l.Event.Data, &d)
 
 	buffer.Write(l.Event.ID)
 	buffer.WriteString(",")
@@ -63,6 +60,8 @@ func (lg *logger) Write(l *Log) {
 	buffer.WriteString(strconv.Itoa(l.Connections))
 	buffer.WriteString("\n")
 
+	mu.Lock()
+	defer mu.Unlock()
 	lg.file.Write(buffer.Bytes())
 }
 
