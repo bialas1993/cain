@@ -11,5 +11,5 @@ ulimit -a
 ## Usage
 
 ```
-bin/cain -u "https://cue.prev-6.dev.nvtvt.com/sseproxy?filter=NQ==" -d 100
+bin/cain -u "https://sse.proxy" -d 100
 ```
