@@ -10,3 +10,4 @@ services:
     volumes: 
       - "./log.config:/etc/logstash/conf.d/12-connections.conf:ro"
       - "./log.csv:/tmp/log.csv:ro"
+      - ".data:/var/lib/elasticsearch"

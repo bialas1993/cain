@@ -3,7 +3,7 @@ TEST?=./...
 default: test
 
 build:
-	go build -a -ldflags '-X "main.version=${version}" -X "main.date=${date}" -s -w' -o ./bin/cain ./cmd/cain/main.go
+	CGO_ENABLED=0 go build -a -ldflags '-X "main.version=${version}" -X "main.date=${date}" -s -w' -o ./bin/cain ./cmd/cain/main.go
 	
 fmt: generate
 	go fmt ./...
