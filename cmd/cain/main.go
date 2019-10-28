@@ -74,7 +74,7 @@ func Load(cmd *cobra.Command, args []string) {
 			fmt.Printf("clients: %+v\n", c)
 
 			if err := sseclient.NewClient(uri, events); err != nil {
-				logrus.Errorf("Can not create connection, opened: %d", openedConnections)
+				logrus.Errorf("Can not create connection, opened: %d", openedConnections-1)
 				connectFail = true
 			}
 			break
