@@ -12,7 +12,7 @@
     <div class="slidecontainer">
         <input type="range" min="1" max="1500" value="50" class="slider" id="myRange">
 
-        <button onclick="scale()">Scale</button>
+        <button id="scale" onclick="scale()" disabled>Scale</button>
         <p>Value: <span id="value"></span></p>
         <pre>
           <p id=log></p>
@@ -22,8 +22,10 @@
     <script>
         const slider = document.getElementById("myRange");
         const output = document.getElementById("value");
+        const scaleBtn = document.getElementById("scale");
+        
         const log = document.getElementById("log");
-        let socket = new WebSocket("ws://localhost:8080/echo");
+        let socket = new WebSocket("ws://127.0.0.1:3000/ws");
 
         output.innerHTML = slider.value;
         
@@ -38,10 +40,12 @@
         logger("Attempting Connection...");
 
         socket.onopen = () => {
+            scaleBtn.disabled = false;
             logger("Successfully Connected");
         };
         
         socket.onclose = event => {
+            scaleBtn.disabled = true;
             logger("Socket Closed Connection: ", event);
         };
 
