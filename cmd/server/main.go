@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -20,9 +21,9 @@ import (
 
 var (
 	buffer            bytes.Buffer
-	openedConnections int    = 0
-	connectFail       bool   = false
-	uri               string = "https://sse.stage.tvn24.pl/?filter=MjgxOQ=="
+	openedConnections int  = 0
+	connectFail       bool = false
+	uri               string
 )
 
 func init() {
@@ -41,6 +42,9 @@ func main() {
 		close(clients)
 		log.Close()
 	}()
+
+	flag.StringVar(&uri, "uri", "", "address to test")
+	flag.Parse()
 
 	router := http.NewServeMux()
 	router.HandleFunc("/", rootHandler)
