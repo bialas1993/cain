@@ -90,7 +90,7 @@ func Load(cmd *cobra.Command, args []string) {
 			break
 
 		case event := <-events:
-			if len(event.ID) > 0 {
+			if len(event.Data) > 0 {
 				fmt.Printf("|")
 
 				go func(event *sse.Event, openedConnections int) {
